@@ -32,14 +32,13 @@ Before running this simulation, ensure you have the following prerequisites inst
 
 ## Installation
 
-```bash
-git clone https://github.com/yourusername/magnetic-skyrmion-simulation.git
-cd magnetic-skyrmion-simulation
-pip install -r requirements.txt
+
+- git clone https://github.com/yourusername/magnetic-skyrmion-simulation.git
+- cd magnetic-skyrmion-simulation
+- pip install -r requirements.txt
 
 
-
-# Usage
+## Usage
 
 To perform a simulation, follow these steps:
 
