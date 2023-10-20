@@ -201,6 +201,9 @@ The systems class consists of these 5 functions:
 - Returns: Total Dzyaloshinskii-Moriya energy.
 - 
 - I iterate through all the spins in the lattice while considering their neighbours.
+- The DMI energy between two spins s1 and s1 is edmi = −D · (s1 × s2), where D = Drij is the DMI vector. I implement this in line `if (i > nx-1) & (j > ny -2):
+                    Edmi1 += np.sum((rX *self.s.array[i,j, 0] *self.s.array[i+rX,j,1]))`
+  If there's a spin beside our current spin, I multiply it by the next spin. This gets the Edmi energy between 2 spins, i iterate through all the spins in the lattice structure then get the dot product `totalEdmi += np.dot(Edmi1,Edmi2)` and multiply it by Dzyaloshinskii-Moriya energy constant.
 - The rX and rY variables are adjusted based on the spin's position which influences subsequent calculations.
 - In the nested for loop, I calculate the spin(s) energy using this formula :
 ` Edmi =-J [ Σ(i=0, to I =nx-1)(Σ(j=0, to j=ny-2)  rij*(Si,j* Si,j +1)  +  Σ(j=0, to j =ny-1)(Σ(i=0, to i=nx-2) rij*(Si,j* Si+1,j) ]`
