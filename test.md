@@ -65,6 +65,19 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
     - I compute the sum of the x, y, and z components of the spins in the lattice.
     - Then, it calculates the mean by dividing the sum by the product of the lattice dimensions (nx * ny).
     - The result is returned as an array with three components (mx, my, mz).
+```
+    def mean(self):
+        total_x = np.sum(self.array[..., 0])
+        total_y = np.sum(self.array[..., 1])
+        total_z = np.sum(self.array[..., 2])
+
+        nx, ny = self.n
+        mx = total_x / (nx*ny)
+        my = total_y / (nx * ny)
+        mz = total_z / (nx * ny)
+        return np.array([mx,my,mz])
+```
+
 
 ## `__abs__(self)`
 
@@ -73,6 +86,12 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
     - I first square each component of the spins and sum them along the last axis ([-1]).
     - Then, I take the square root of the resulting sum, which gives the magnitude of each spin.
     - The result is returned as an array of magnitudes.
+```
+    def __abs__(self):
+        sum = np.sum(self.array**2,axis=-1)
+        norm = np.sqrt(sum)
+        return norm[..., np.newaxis]
+```
 
 ## `normalise(self)`
 
@@ -102,7 +121,27 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
   
   Additional information about quiverplots can be found here. https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.quiver.html
 
+```
+    def plot(self, **kwargs):
+        figureSize = kwargs.get('figsize', (7,7))
+        # cmap = kwargs.get('cmap', 'viridis')
 
+        nx, ny, nz = self.array.shape
+        x,y = np.meshgrid(range(nx), range(ny))
+
+        u , v = self.array[:,:,0], self.array[:,:,1]
+        plt.figure(figsize=figureSize)
+        # After tinkering around, I discovered that at a scale of 100, we can see the uniform lattice arrangement of the
+        # spins, but I have to scale it down in order to see the direction of the arrows.
+        # plt.quiver(x, y, xx, yy, scale=100, cmap=cmap)
+
+        plt.quiver(x, y, u, v, scale=10, cmap='Blues')
+
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.title('Spin Lattice Visualisation')
+        plt.show()
+```
 
 
 ## Driver Class
@@ -136,6 +175,22 @@ The systems class consists of these 5 functions:
 - Description: Calculates the uniaxial anisotropy energy contribution.
 - Returns: Total uniaxial anisotropy energy.
 
+   - `self.u` is normalised to ensure it's a unit vector, this sets the preferred spin orientation. Then`self.s.array` is dot-multiplied with the normalised `u` to align the spins with the anisotropy axis.
+   - `sumOfNormalised` represents the aforementioned alignment of spins with the anisotropy axis.
+
+   - `totalAnisotropyEnergy` is computed as the product of `-self.K` and the sum of aligned spins squared, with a negative sign indicating energy lowering. The result is returned.
+
+```
+ def anisotropy(self):
+        # normalising u
+        normalised = self.u / np.linalg.norm(self.u)
+        sumOfNormalised = np.sum(self.s.array * normalised, axis=-1)
+
+        totalAnisotropyEnergy = -self.K * np.sum(sumOfNormalised**2)
+        # raise NotImplementedError
+        return totalAnisotropyEnergy
+```
+
 #### `exchange(self) -> float`
 
 - Description: Calculates the exchange energy contribution.
@@ -143,11 +198,42 @@ The systems class consists of these 5 functions:
 
 #### `dmi(self) -> float`
 
-- Description: Calculates the Dzyaloshinskii-Moriya energy contribution.
+- Description: Computes the contribution of the Dzyaloshinskii-Moriya Interaction (DMI) energy in a magnetic system.
 - Returns: Total Dzyaloshinskii-Moriya energy.
+- 
+- I iterate through all the spins in the lattice, while considering their neighbours.
+- The rX and rY variables are adjusted based on the spin's position which influencing subsequent calculations.
+- In the nested for loop, i calculate the spin(s) energy using this formula :
+` Edmi =-J [ Σ(i=0, to I =nx-1)(Σ(j=0, to j=ny-2)  rij*(Si,j* Si,j +1)  +  Σ(j=0, to j =ny-1)(Σ(i=0, to i=nx-2) rij*(Si,j* Si+1,j) ]`
+The dot product of Edmi1 and Edmi2 is accumulated to obtain the total DMI energy (totalEdmi).
+The final DMI energy is computed as -self.D multiplied by totalEdmi.
+The calculated DMI energy is then returned.
+  
+```
+    def dmi(self):
+        nx, ny, _ = self.s.array.shape
+        totalEdmi = 0
+        rX, rY = 0, 0
 
+        Edmi1, Edmi2 = 0, 0
+        for i in range(nx):
+            for j in range(ny):
+                if i < nx - 1:
+                    rX += 1
+                if j < ny - 1:
+                    rY += 1
 
+                if (i > nx-1) & (j > ny -2):
+                    Edmi1 += np.sum((rX *self.s.array[i,j, 0] *self.s.array[i+rX,j,1]))
 
+                if (j > ny-1) & (i > nx-2):
+                    Edmi2 += np.sum((rY * self.s.array[i,j, 0] * self.s.array[i+rY, j, 1] ))
+
+                totalEdmi += np.dot(Edmi1,Edmi2)
+        final= -self.D * totalEdmi
+
+        return final
+```
 # Examples
 
 Below is an example demonstrating the simulation process:
