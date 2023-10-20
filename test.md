@@ -1,8 +1,8 @@
-# Magnetic Skyrmion Simulation
+# Search for a Magnetic Skyrmion
 
 ## Overview
-
-This project offers a simulation environment for studying the emergence and behavior of magnetic skyrmions in a two-dimensional spin lattice. The simulation is based on a comprehensive implementation of various energy terms, including Zeeman energy, uniaxial anisotropy, exchange energy, and Dzyaloshinskii-Moriya energy. The Metropolis Monte Carlo algorithm is employed to minimise the system's energy and identify equilibrium states.
+Computational science is emerging as the third pillar of research and development in academia and industry across all science and engineering disciplines. Computational studies complement experimental and theoretical approaches and are sometimes the only feasible way to address research challenges, effective industrial design, and engineering of various products and systems
+This project addresses research challenge by showcasing a simulation environment for studying the behavior of magnetic skyrmions in a 2D spin-lattice. The simulation is based on a comprehensive implementation of energy terms, such as Zeeman energy, uniaxial anisotropy energy, exchange energy, and Dzyaloshinskii-Moriya energy. The Metropolis Monte Carlo algorithm is employed to minimise the system's energy and identify all equilibrium states.
 
 ## Table of Contents
 
@@ -11,21 +11,22 @@ This project offers a simulation environment for studying the emergence and beha
 - [Usage](#usage)
 - [Classes and Modules](#classes-and-modules)
   - [Spins Class](#spins-class)
+    - [Test Results](#test-results)
   - [System Class](#system-class)
+    - [Test Results](#test-results)
   - [Driver Class](#driver-class)
+    - [Performance Considerations](#performance-considerations)
 - [Technical Details](#technical-details)
   - [Metropolis Monte Carlo Algorithm](#metropolis-monte-carlo-algorithm)
   - [Energy Computations](#energy-computations)
   - [Random Spin Generation](#random-spin-generation)
-- [Examples](#examples)
-- [Performance Considerations](#performance-considerations)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
 ## Prerequisites
 
-Before running this simulation, ensure you have the following prerequisites installed:
+Before running this simulation, please make sure you have the following prerequisites installed:
 
 - Python (>= 3.6)
 - NumPy (>= 1.18)
@@ -49,7 +50,6 @@ To perform a simulation, follow these steps:
 4. Initialise the Driver class.
 5. Drive the system using the Metropolis Monte Carlo algorithm.
 
-For detailed usage instructions and code examples, refer to the Examples section.
 
 # Classes and Modules
 
@@ -142,14 +142,16 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
         plt.show()
 ```
 
+## Test Results
+![](images/Spin%20Tests.png)
 
 ## Driver Class
 
-The Driver class implements the Metropolis Monte Carlo algorithm whose purpose involves minimising the system's energy and finding the equilibrium states. It provides a method to drive the simulation.
+The Driver class implements the Metropolis Monte Carlo algorithm whose main purpose is to minimise the system's energy and find all equilibrium states. It provides a method to drive the simulation.
 
 #### Metropolis Monte Carlo Algorithm
 
-The Metropolis Monte Carlo algorithm is used to minimise the system's energy. It randomly selcts and modifies spins, this is then followed by acceptance or rejection based on energy changes, if the enerygy delta is higher than 0, we accept the changed spin, else we reject it and stay with the original spin. The process is repeated n times to reach equilibrium states.
+The Metropolis Monte Carlo algorithm is used to minimise the system's energy. It randomly selects and modifies spins, this is then followed by acceptance or rejection based on energy changes, if the enerygy delta is higher than 0, we accept the changed spin, else we reject it and stay with the original spin. The process is repeated n times to reach equilibrium states.
 
 #### Performance Considerations
 The value of n in the Monte Carlo algorithm depends on the size of the system. Larger systems will require more iterations to reach equilibrium states. Hence optimisations may be necessary. The larger the system, the higher the runtime and test time. Testing my code took a long period because n = 10^6 for some test cases.
@@ -201,9 +203,9 @@ The systems class consists of these 5 functions:
 - Returns: Total Dzyaloshinskii-Moriya energy.
 - 
 - I iterate through all the spins in the lattice while considering their neighbours.
-- The DMI energy between two spins s1 and s1 is edmi = −D · (s1 × s2), where D = Drij is the DMI vector. I implement this in line `if (i > nx-1) & (j > ny -2):
+- The DMI energy between two spins s1 and s1 is edmi = −D · (s1 × s2), where D = Drij is the DMI vector. I implement this on line `if (i > nx-1) & (j > ny -2):
                     Edmi1 += np.sum((rX *self.s.array[i,j, 0] *self.s.array[i+rX,j,1]))`
-  If there's a spin beside our current spin, I multiply it by the next spin. This gets the Edmi energy between 2 spins, i iterate through all the spins in the lattice structure then get the dot product `totalEdmi += np.dot(Edmi1,Edmi2)` and multiply it by Dzyaloshinskii-Moriya energy constant.
+  If there's a spin beside our current spin, I multiply it by the next spin. This gets the Edmi energy between 2 spins, I iterate through all the spins in the lattice structure, then get the dot product `totalEdmi += np.dot(Edmi1,Edmi2)` and multiply it by Dzyaloshinskii-Moriya energy constant.
 - The rX and rY variables are adjusted based on the spin's position which influences subsequent calculations.
 - In the nested for loop, I calculate the spin(s) energy using this formula :
 ` Edmi =-J [ Σ(i=0, to I =nx-1)(Σ(j=0, to j=ny-2)  rij*(Si,j* Si,j +1)  +  Σ(j=0, to j =ny-1)(Σ(i=0, to i=nx-2) rij*(Si,j* Si+1,j) ]`
