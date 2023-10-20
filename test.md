@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project offers a simulation environment for studying the emergence and behavior of magnetic skyrmions in a two-dimensional spin lattice. The simulation is based on a comprehensive implementation of various energy terms, including Zeeman energy, uniaxial anisotropy, exchange energy, and Dzyaloshinskii-Moriya energy. The Metropolis Monte Carlo algorithm is employed to minimize the system's energy and identify equilibrium states.
+This project offers a simulation environment for studying the emergence and behavior of magnetic skyrmions in a two-dimensional spin lattice. The simulation is based on a comprehensive implementation of various energy terms, including Zeeman energy, uniaxial anisotropy, exchange energy, and Dzyaloshinskii-Moriya energy. The Metropolis Monte Carlo algorithm is employed to minimise the system's energy and identify equilibrium states.
 
 ## Table of Contents
 
@@ -34,7 +34,7 @@ Before running this simulation, ensure you have the following prerequisites inst
 ## Installation
 
 
-- git clone https://github.com/yourusername/magnetic-skyrmion-simulation.git
+- git clone https://github.com/edsml-b7e20b2b/magnetic-skyrmion-simulation.git
 - cd magnetic-skyrmion-simulation
 - pip install -r requirements.txt
 
@@ -43,10 +43,10 @@ Before running this simulation, ensure you have the following prerequisites inst
 
 To perform a simulation, follow these steps:
 
-1. Initialize a spin lattice using the Spins class.
-2. Randomize the spins or set an initial spin configuration.
-3. Visualize the spin lattice if desired.
-4. Initialize the Driver class.
+1. Initialise a spin lattice using the Spins class.
+2. Randomise the spins or set an initial spin configuration.
+3. Visualise the spin lattice if desired.
+4. Initialise the Driver class.
 5. Drive the system using the Metropolis Monte Carlo algorithm.
 
 For detailed usage instructions and code examples, refer to the Examples section.
@@ -55,7 +55,7 @@ For detailed usage instructions and code examples, refer to the Examples section
 
 ## Spins Class
 
-The Spins class represents a field of spins on a two-dimensional lattice. Each spin is a three-dimensional vector (sx, sy, sz). The class provides methods for initialization, normalization, and visualization of the spin lattice.
+The Spins class represents a field of spins on a two-dimensional lattice. Each spin is a three-dimensional vector (sx, sy, sz). The class provides methods for initialisation, normalisation, and visualiation of the spin lattice.
 
 The spins class consists of 4 methods; mean, normalise, randomise and plot.
 ## `mean(self)`
@@ -109,11 +109,15 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
 
 The Driver class implements the Metropolis Monte Carlo algorithm whose purpose involves minimising the system's energy and finding the equilibrium states. It provides a method to drive the simulation.
 
-####Metropolis Monte Carlo Algorithm
+#### Metropolis Monte Carlo Algorithm
 
 The Metropolis Monte Carlo algorithm is used to minimise the system's energy. It randomly selcts and modifies spins, this is then followed by acceptance or rejection based on energy changes, if the enerygy delta is higher than 0, we accept the changed spin, else we reject it and stay with the original spin. The process is repeated n times to reach equilibrium states.
 
-## System Energy Calculation
+#### Performance Considerations
+The value of n in the Monte Carlo algorithm depends on the size of the system. Larger systems will require more iterations to reach equilibrium states. Hence optimisations may be necessary. The larger the system, the higher the runtime and test time. Testing my code took a long period because n = 10^6 for some test cases.
+
+
+## System Class
 
 The system's total energy is computed as the sum of individual energy terms, which include Zeeman energy, anisotropy energy, and exchange energy. These terms are evaluated for each spin configuration.
 The systems class consists of these 5 functions:
@@ -149,17 +153,21 @@ The systems class consists of these 5 functions:
 Below is an example demonstrating the simulation process:
 
 ```python
-# Initialize a spin lattice
+# Initialise a spin lattice
 spins = Spins(n=(5, 5))
 
-# Randomize spins
+# Randomise spins
 spins.randomise()
 
-# Visualize the spin lattice
+# Visualise the spin lattice
 spins.plot()
 
-# Initialize the driver
+# Initialise the driver
 driver = Driver()
 
 # Drive the system using Metropolis Monte Carlo algorithm
 driver.drive(spins, n=100000)
+```
+
+## Acknowledgements
+I want to thank Imperial College's ESE Department Professors and GTAs for their contributions to this project.
