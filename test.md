@@ -124,7 +124,6 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
 ```
     def plot(self, **kwargs):
         figureSize = kwargs.get('figsize', (7,7))
-        # cmap = kwargs.get('cmap', 'viridis')
 
         nx, ny, nz = self.array.shape
         x,y = np.meshgrid(range(nx), range(ny))
