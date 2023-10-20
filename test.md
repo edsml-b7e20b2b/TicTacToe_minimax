@@ -45,7 +45,7 @@ To perform a simulation, follow these steps:
 
 1. Initialise a spin lattice using the Spins class.
 2. Randomise the spins or set an initial spin configuration.
-3. Visualise the spin lattice if desired.
+3. Visualise the spin lattice.
 4. Initialise the Driver class.
 5. Drive the system using the Metropolis Monte Carlo algorithm.
 
@@ -98,7 +98,7 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
 - **Description:** This method normalises the magnitude of all spins in the lattice to 1.
 - **Details:**
     - It divides each spin vector by its magnitude (calculated using `__abs__`) in order to make sure all spins have unit length.
-    - Note: This method will fail the tests  if the `__abs__` method is not implemented.
+    - Note: This method fails the tests  if the `__abs__` method is not implemented.
 
 ## `randomise(self)`
 
@@ -117,7 +117,7 @@ The spins class consists of 4 methods; mean, normalise, randomise and plot.
     - The final visualisation displays the lattice structure and spin directions.
     - The plot is displayed with labels and a title.
 
-    Note: Some commented-out code suggest adjustments that can be made to alter the plot's appearance, like changing the scale or colormap. For example, playing with the "scale" parameter reveals the spin/lattice formation.
+    Note: Some commented-out code suggest adjustments that can be made to alter the plot's appearance, like changing the scale or colormap. For example, playing with the "scale" parameter and setting it to '100' reveals the spin/lattice formation.
   
   Additional information about quiverplots can be found here. https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.quiver.html
 
@@ -175,7 +175,7 @@ The systems class consists of these 5 functions:
 - Description: Calculates the uniaxial anisotropy energy contribution.
 - Returns: Total uniaxial anisotropy energy.
 
-   - `self.u` is normalised to ensure it's a unit vector, this sets the preferred spin orientation. Then`self.s.array` is dot-multiplied with the normalised `u` to align the spins with the anisotropy axis.
+   - `self.u` is normalised to ensure that it's a unit vector, this sets the preferred spin orientation. Then`self.s.array` is dot-multiplied with the normalised `u` to align the spins with the anisotropy axis.
    - `sumOfNormalised` represents the aforementioned alignment of spins with the anisotropy axis.
 
    - `totalAnisotropyEnergy` is computed as the product of `-self.K` and the sum of aligned spins squared, with a negative sign indicating energy lowering. The result is returned.
@@ -201,12 +201,11 @@ The systems class consists of these 5 functions:
 - Description: Computes the contribution of the Dzyaloshinskii-Moriya Interaction (DMI) energy in a magnetic system.
 - Returns: Total Dzyaloshinskii-Moriya energy.
 - 
-- I iterate through all the spins in the lattice, while considering their neighbours.
-- The rX and rY variables are adjusted based on the spin's position which influencing subsequent calculations.
-- In the nested for loop, i calculate the spin(s) energy using this formula :
+- I iterate through all the spins in the lattice while considering their neighbours.
+- The rX and rY variables are adjusted based on the spin's position which influences subsequent calculations.
+- In the nested for loop, I calculate the spin(s) energy using this formula :
 ` Edmi =-J [ Σ(i=0, to I =nx-1)(Σ(j=0, to j=ny-2)  rij*(Si,j* Si,j +1)  +  Σ(j=0, to j =ny-1)(Σ(i=0, to i=nx-2) rij*(Si,j* Si+1,j) ]`
-The dot product of Edmi1 and Edmi2 is accumulated to obtain the total DMI energy (totalEdmi).
-The final DMI energy is computed as -self.D multiplied by totalEdmi.
+The dot product of Edmi1 and Edmi2 is accumulated to obtain the total DMI energy (totalEdmi). The final DMI energy is ` -self.D *  totalEdmi` .
 The calculated DMI energy is then returned.
   
 ```
@@ -234,26 +233,7 @@ The calculated DMI energy is then returned.
 
         return final
 ```
-# Examples
 
-Below is an example demonstrating the simulation process:
-
-```python
-# Initialise a spin lattice
-spins = Spins(n=(5, 5))
-
-# Randomise spins
-spins.randomise()
-
-# Visualise the spin lattice
-spins.plot()
-
-# Initialise the driver
-driver = Driver()
-
-# Drive the system using Metropolis Monte Carlo algorithm
-driver.drive(spins, n=100000)
-```
 
 ## Acknowledgements
-I want to thank Imperial College's ESE Department Professors and GTAs for their contributions to this project.
+I want to thank Imperial College London ESE Department Professors and GTAs for their contributions to this project.
